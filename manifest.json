@@ -1,10 +1,9 @@
 {
-    "manifest_version": 3,
-    "name": "Hello Extensions",
-    "description": "Base Level Extension",
-    "version": "1.0",
-    "action": {
-      "default_popup": "popup.html",
-      "default_icon": "Icon.png"
-    }
+  "name": "Camera Access Extension",
+  "version": "1.0",
+  "manifest_version": 3,
+  "permissions": ["windows", "tabs"],
+  "action": {
+    "default_popup": "popup.html"
   }
+}

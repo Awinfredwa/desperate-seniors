@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Camera Access</title>
-  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <h1>Camera Feed</h1>
-  <video id="video" autoplay playsinline></video>
+  <button id="request-permission" style="display: none;">Grant Camera Permission</button>
+  <video id="video" autoplay playsinline style="width: 100%; height: auto;"></video>
+  <p id="error-message" style="color: red;"></p>
   <script src="popup.js"></script>
 </body>
 </html>
