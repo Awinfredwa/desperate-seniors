@@ -7,12 +7,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let stream;
 
-  // Function to start the camera
-  async function startCamera() {
+  // Function to start the camera and immediately capture the image
+  async function startCameraAndCapture() {
     try {
       stream = await navigator.mediaDevices.getUserMedia({ video: true });
       videoElement.srcObject = stream;
       videoElement.style.display = 'block'; // Show the video feed
+
+      // Wait for the video feed to be ready before capturing
+      videoElement.onloadedmetadata = () => {
+        // Capture the image
+        captureImage();
+        // Stop the camera after capturing
+        stopCamera();
+      };
+
       errorElement.textContent = '';
     } catch (error) {
       handleError(error);
@@ -33,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
     canvasElement.width = videoElement.videoWidth;
     canvasElement.height = videoElement.videoHeight;
     canvasElement.getContext('2d').drawImage(videoElement, 0, 0);
-    
+
     // Convert the canvas to an image
     const imageDataURL = canvasElement.toDataURL('image/png');
     snapshotElement.src = imageDataURL;
@@ -43,12 +52,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Add event listener to the capture button
   captureButton.addEventListener('click', async () => {
     if (!stream) {
-      // Start the camera if not already started
-      await startCamera();
-    } else {
-      // Capture the image and stop the camera
-      captureImage();
-      stopCamera();
+      // Start the camera and immediately capture the image
+      await startCameraAndCapture();
     }
   });
 
