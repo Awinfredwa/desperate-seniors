@@ -1,72 +1,60 @@
 document.addEventListener('DOMContentLoaded', () => {
   const videoElement = document.getElementById('video');
+  const canvasElement = document.getElementById('canvas');
+  const snapshotElement = document.getElementById('snapshot');
   const errorElement = document.getElementById('error-message');
-  const requestPermissionButton = document.getElementById('request-permission');
+  const captureButton = document.getElementById('capture');
 
-  async function attemptCameraAccess() {
+  let stream;
+
+  // Function to start the camera
+  async function startCamera() {
     try {
-      // Try to access the camera
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      stream = await navigator.mediaDevices.getUserMedia({ video: true });
       videoElement.srcObject = stream;
-      requestPermissionButton.style.display = 'none';
+      videoElement.style.display = 'block'; // Show the video feed
       errorElement.textContent = '';
     } catch (error) {
-      if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
-        // Permission not granted, show the request permission button
-        requestPermissionButton.style.display = 'block';
-        requestPermissionButton.onclick = openPermissionWindow;
-      } else {
-        handleError(error);
-      }
+      handleError(error);
     }
   }
 
-  function openPermissionWindow() {
-    chrome.windows.create(
-      {
-        url: chrome.runtime.getURL('permission.html'),
-        type: 'popup',
-        width: 400,
-        height: 300,
-      },
-      (newWindow) => {
-        // Listen for messages from the permission window
-        chrome.runtime.onMessage.addListener(function messageListener(message, sender, sendResponse) {
-          if (message.type === 'permissionResult') {
-            // Stop listening for messages
-            chrome.runtime.onMessage.removeListener(messageListener);
-            // Retry accessing the camera
-            attemptCameraAccess();
-          }
-        });
-      }
-    );
+  // Function to stop the camera
+  function stopCamera() {
+    if (stream) {
+      const tracks = stream.getTracks();
+      tracks.forEach(track => track.stop());
+      videoElement.style.display = 'none'; // Hide the video feed
+    }
   }
 
-  // Initial attempt to access the camera
-  attemptCameraAccess();
+  // Function to capture the image
+  function captureImage() {
+    canvasElement.width = videoElement.videoWidth;
+    canvasElement.height = videoElement.videoHeight;
+    canvasElement.getContext('2d').drawImage(videoElement, 0, 0);
+    
+    // Convert the canvas to an image
+    const imageDataURL = canvasElement.toDataURL('image/png');
+    snapshotElement.src = imageDataURL;
+    snapshotElement.style.display = 'block'; // Show the captured image
+  }
+
+  // Add event listener to the capture button
+  captureButton.addEventListener('click', async () => {
+    if (!stream) {
+      // Start the camera if not already started
+      await startCamera();
+    } else {
+      // Capture the image and stop the camera
+      captureImage();
+      stopCamera();
+    }
+  });
+
+  // Error handling function
+  function handleError(error) {
+    console.error('Error accessing the camera: ', error);
+    errorElement.textContent = 'An error occurred while accessing the camera.';
+  }
 });
-
-function handleError(error) {
-  const errorElement = document.getElementById('error-message');
-  console.error('Error accessing the camera: ', error);
-  switch (error.name) {
-    case 'NotAllowedError':
-      errorElement.textContent = 'Permission to access the camera was denied.';
-      break;
-    case 'NotFoundError':
-      errorElement.textContent = 'No camera devices found.';
-      break;
-    case 'NotReadableError':
-      errorElement.textContent = 'The camera is already in use by another application.';
-      break;
-    case 'OverconstrainedError':
-      errorElement.textContent = 'The specified video constraints cannot be satisfied.';
-      break;
-    case 'SecurityError':
-      errorElement.textContent = 'Camera access is blocked due to security reasons.';
-      break;
-    default:
-      errorElement.textContent = 'An unknown error occurred while accessing the camera.';
-  }
-}

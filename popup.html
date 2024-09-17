@@ -6,8 +6,10 @@
 </head>
 <body>
   <h1>Camera Feed</h1>
-  <button id="request-permission" style="display: none;">Grant Camera Permission</button>
-  <video id="video" autoplay playsinline style="width: 100%; height: auto;"></video>
+  <button id="capture">Capture</button>
+  <video id="video" autoplay playsinline style="display: none; width: 100%; height: auto;"></video>
+  <canvas id="canvas" style="display: none;"></canvas>
+  <img id="snapshot" alt="Captured Image" style="display: none;"/>
   <p id="error-message" style="color: red;"></p>
   <script src="popup.js"></script>
 </body>
