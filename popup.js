@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Wait for the video feed to be ready before capturing
       videoElement.onloadedmetadata = () => {
+        // wait 2 seconds before capturing the image
+        setTimeout(captureImage, 2000);
         // Capture the image
         captureImage();
         // Stop the camera after capturing
@@ -47,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const imageDataURL = canvasElement.toDataURL('image/png');
     snapshotElement.src = imageDataURL;
     snapshotElement.style.display = 'block'; // Show the captured image
+    detectMouthOpen(imageDataURL);
   }
 
   // Add event listener to the capture button
