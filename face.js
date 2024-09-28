@@ -2,9 +2,13 @@ let modelsLoaded = false;
 
 async function loadModels() {
   // Load models from the Chrome extension's local assets
-  const modelUrl = chrome.runtime.getURL('models'); // Get the correct path for your models
-  await faceapi.nets.tinyFaceDetector.loadFromUri(modelUrl);
-  await faceapi.nets.faceLandmark68Net.loadFromUri(modelUrl);
+  //const modelUrl = chrome.runtime.getURL('models'); // Get the correct path for your models
+  // await faceapi.nets.tinyFaceDetector.loadFromUri(modelUrl);
+  // await faceapi.nets.faceLandmark68Net.loadFromUri(modelUrl);
+  await faceapi.loadTinyFaceDetectorModel('/models');
+  await faceapi.loadFaceLandmarkTinyModel('/models');
+ 
+  //await faceapi.loadModels(modelUrl);
   console.log('Models are loaded');
   modelsLoaded = true;  // Mark models as loaded
 }

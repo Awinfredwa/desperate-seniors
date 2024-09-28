@@ -11,13 +11,14 @@ document.addEventListener('DOMContentLoaded', () => {
   async function startCameraAndCapture() {
     try {
       stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      setTimeout(captureImage, 8000);
       videoElement.srcObject = stream;
       videoElement.style.display = 'block'; // Show the video feed
-
       // Wait for the video feed to be ready before capturing
+      setTimeout(captureImage, 8000);
       videoElement.onloadedmetadata = () => {
         // wait 2 seconds before capturing the image
-        setTimeout(captureImage, 2000);
+        setTimeout(captureImage, 8000);
         // Capture the image
         captureImage();
         // Stop the camera after capturing
