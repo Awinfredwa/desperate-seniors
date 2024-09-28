@@ -2,7 +2,13 @@
   "name": "Camera Access Extension",
   "version": "1.0",
   "manifest_version": 3,
-  "permissions": ["windows", "tabs"],
+  "permissions": ["windows", "activeTab", "storage"],
+  "web_accessible_resources": [
+    {
+      "resources": ["models/*"],
+      "matches": ["<all_urls>"]
+    }
+  ],
   "action": {
     "default_popup": "popup.html"
   }

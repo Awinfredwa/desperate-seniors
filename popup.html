@@ -2,19 +2,36 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://cdn.jsdelivr.net;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; media-src 'self'; style-src 'self' https://cdn.jsdelivr.net;">
   <title>Camera Access</title>
+  <!-- Link to external stylesheet -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <h1>Camera Feed</h1>
+  
+  <!-- Button to capture an image -->
   <button id="capture">Capture</button>
-  <video id="video" autoplay playsinline style="display: none; width: 100%; height: auto;"></video>
-  <canvas id="canvas" style="display: none;"></canvas>
-  <img id="snapshot" alt="Captured Image" style="display: none;"/>
-  <p id="error-message" style="color: red;"></p>
+  
+  <!-- Video element for live camera feed -->
+  <video id="video" autoplay playsinline></video>
+  
+  <!-- Canvas to draw the captured image -->
+  <canvas id="canvas"></canvas>
+  
+  <!-- Image element to display the snapshot -->
+  <img id="snapshot" alt="Captured Image"/>
+  
+  <!-- Display error messages -->
+  <p id="error-message"></p>
+  
+  <!-- Display mouth status -->
   <p id="mouthStatus">Mouth Status: </p>
-  <script defer src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+
+  <!-- Include face-api.js -->
+  <script src="dist/face-api.js"></script>
+  
+  <!-- Custom scripts -->
   <script src="popup.js"></script>
   <script src="face.js"></script>
 </body>

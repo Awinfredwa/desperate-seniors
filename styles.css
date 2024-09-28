@@ -1,14 +1,39 @@
+/* Style for hiding the video element initially */
+#video {
+  display: none;
+  width: 100%;
+  height: auto;
+}
+
+/* Style for hiding the canvas initially */
+#canvas {
+  display: none;
+}
+
+/* Style for hiding the snapshot initially */
+#snapshot {
+  display: none;
+}
+
+/* Style for error message */
+#error-message {
+  color: red;
+}
+
+/* Basic button styling */
+button {
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Display settings for body and title */
 body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-  }
-  
-  h1 {
-    margin-bottom: 10px;
-  }
-  
-  video {
-    width: 100%;
-    height: auto;
-    border: 2px solid black;
-  }
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
