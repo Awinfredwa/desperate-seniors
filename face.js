@@ -1,10 +1,6 @@
 let modelsLoaded = false;
 
 async function loadModels() {
-  // Load models from the Chrome extension's local assets
-  //const modelUrl = chrome.runtime.getURL('models'); // Get the correct path for your models
-  // await faceapi.nets.tinyFaceDetector.loadFromUri(modelUrl);
-  // await faceapi.nets.faceLandmark68Net.loadFromUri(modelUrl);
   await faceapi.loadTinyFaceDetectorModel('/models');
   await faceapi.loadFaceLandmarkTinyModel('/models');
  
@@ -19,8 +15,8 @@ async function detectMouthOpen(image) {
     console.error("Models not loaded yet!");
     return;
   }
-  
-  const detections = await faceapi.detectSingleFace(image, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
+  const useTinyModel = true
+  const detections = await faceapi.detectSingleFace(image, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks(useTinyModel);
   if (!detections) {
     document.getElementById('mouthStatus').innerText = "Mouth Status: No face detected";
     return;

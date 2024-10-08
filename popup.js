@@ -10,19 +10,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Function to start the camera and immediately capture the image
   async function startCameraAndCapture() {
     try {
+      // Start video stream
       stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      setTimeout(captureImage, 8000);
       videoElement.srcObject = stream;
-      videoElement.style.display = 'block'; // Show the video feed
-      // Wait for the video feed to be ready before capturing
-      setTimeout(captureImage, 8000);
+      videoElement.play(); // Start playing the video feed
+
+      // Wait for video metadata to load (ensures width and height are available)
       videoElement.onloadedmetadata = () => {
-        // wait 2 seconds before capturing the image
-        setTimeout(captureImage, 8000);
-        // Capture the image
-        captureImage();
-        // Stop the camera after capturing
-        stopCamera();
+        setTimeout(captureImage, 2000); // Delay capture to ensure video is loaded
       };
 
       errorElement.textContent = '';
@@ -36,32 +31,42 @@ document.addEventListener('DOMContentLoaded', () => {
     if (stream) {
       const tracks = stream.getTracks();
       tracks.forEach(track => track.stop());
-      videoElement.style.display = 'none'; // Hide the video feed
+      videoElement.srcObject = null; // Clear the video element
+      stream = null;
     }
   }
 
   // Function to capture the image
-function captureImage() {
-  // Capture the video frame and draw it on the canvas
-  canvasElement.width = videoElement.videoWidth;
-  canvasElement.height = videoElement.videoHeight;
-  canvasElement.getContext('2d').drawImage(videoElement, 0, 0);
+  function captureImage() {
+    // Ensure the video has a valid width and height
+    const width = videoElement.videoWidth;
+    const height = videoElement.videoHeight;
+    
+    if (width && height) {
+      // Capture the video frame and draw it on the canvas
+      canvasElement.width = width;
+      canvasElement.height = height;
+      const context = canvasElement.getContext('2d');
+      context.drawImage(videoElement, 0, 0, width, height);
 
-  // Convert the canvas to an image data URL (base64 string)
-  const imageDataURL = canvasElement.toDataURL('image/png');
-  snapshotElement.src = imageDataURL;
-  snapshotElement.style.display = 'block'; // Show the captured image
+      // Convert the canvas to an image data URL (base64 string)
+      const imageDataURL = canvasElement.toDataURL('image/png');
+      snapshotElement.src = imageDataURL;
+      snapshotElement.style.display = 'block'; // Show the captured image
 
-  // Convert base64 image string to an HTML image element
-  const img = new Image();
-  img.src = imageDataURL;
-  
-  img.onload = () => {
-    // Once the image is loaded, call the detectMouthOpen function
-    detectMouthOpen(img); // Pass the image element to face-api.js
-  };
-}
+      // Optionally stop the camera after capturing
+      stopCamera();
 
+      // Convert base64 image string to an HTML image element
+      const img = new Image();
+      img.src = imageDataURL;
+      
+      img.onload = () => {
+        // Once the image is loaded, call the detectMouthOpen function
+        detectMouthOpen(img); // Pass the image element to face-api.js
+      };
+    }
+  }
 
   // Add event listener to the capture button
   captureButton.addEventListener('click', async () => {
